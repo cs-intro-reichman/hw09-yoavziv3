@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Arrays;
+
 
 public class LanguageModel {
 
@@ -133,7 +135,15 @@ public String generate(String initialText, int textLength)
 
         if (probs == null) 
         {
-            break;
+            String[] keys = CharDataMap.keySet().toArray(new String[0]);
+            if (keys.length == 0) 
+            {
+                break;
+            }
+
+            Arrays.sort(keys);
+            currentWindow = keys[randomGenerator.nextInt(keys.length)];
+            probs = CharDataMap.get(currentWindow);
         }
 
         char nextChar = getRandomChar(probs);
@@ -144,15 +154,24 @@ public String generate(String initialText, int textLength)
 }
 
 
+
     /** Returns a string representing the map of this language model. */
-	public String toString() {
-		StringBuilder str = new StringBuilder();
-		for (String key : CharDataMap.keySet()) {
-			List keyProbs = CharDataMap.get(key);
-			str.append(key + " : " + keyProbs + "\n");
-		}
-		return str.toString();
-	}
+	public String toString() 
+{
+    StringBuilder str = new StringBuilder();
+
+    String[] keys = CharDataMap.keySet().toArray(new String[0]);
+    Arrays.sort(keys);
+
+    for (String key : keys) 
+    {
+        List keyProbs = CharDataMap.get(key);
+        str.append(key + " : " + keyProbs + "\n");
+    }
+
+    return str.toString();
+}
+
 
     public static void main(String[] args) 
     {
