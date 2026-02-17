@@ -96,19 +96,20 @@ public String toString() {
      *  increments its counter. Otherwise, adds a new CharData object with the
      *  given chr to the beginning of this list. */
     public void update(char chr) 
+{
+    int index = indexOf(chr);
+
+    if (index != -1) 
     {
-        int index = indexOf(chr);
-        
-        if (index != -1) 
-        {
-            CharData curr = get(index);
-            curr.count++;
-        } 
-        else 
-        {
-            addFirst(chr);
-        }
+        CharData curr = get(index);
+        curr.count++;
+    } 
+    else 
+    {
+        addFirst(chr);
     }
+}
+
 
     /** GIVE If the given character exists in one of the CharData objects
      *  in this list, removes this CharData object from the list and returns
