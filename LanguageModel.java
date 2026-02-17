@@ -1,7 +1,5 @@
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Arrays;
-
 
 public class LanguageModel {
 
@@ -39,7 +37,7 @@ public class LanguageModel {
 public void train(String fileName) 
 {
     CharDataMap.clear();
-
+    firstWindow = null;
     In in = new In(fileName);
     StringBuilder sb = new StringBuilder();
 
@@ -48,26 +46,28 @@ public void train(String fileName)
         sb.append(in.readChar());
     }
 
-    String text = sb.toString();
+    String text = sb.toString().replace("\r", "");
     int n = text.length();
+
+    if (n == 0) 
+    {
+        return;
+    }
 
     if (n < windowLength) 
     {
         return;
     }
 
-    // מודל מעגלי
-    for (int i = 0; i < n; i++) 
+    for (int i = 0; i < n - windowLength; i++) 
     {
-        StringBuilder windowBuilder = new StringBuilder();
+        String window = text.substring(i, i + windowLength);
+        char nextChar = text.charAt(i + windowLength);
 
-        for (int j = 0; j < windowLength; j++) 
+        if (i == 0) 
         {
-            windowBuilder.append(text.charAt((i + j) % n));
+            firstWindow = window;
         }
-
-        String window = windowBuilder.toString();
-        char nextChar = text.charAt((i + windowLength) % n);
 
         List probs = CharDataMap.get(window);
         if (probs == null) 
@@ -75,7 +75,6 @@ public void train(String fileName)
             probs = new List();
             CharDataMap.put(window, probs);
         }
-
         probs.update(nextChar);
     }
 
@@ -84,6 +83,7 @@ public void train(String fileName)
         calculateProbabilities(probs);
     }
 }
+
 
 
     // Computes and sets the probabilities (p and cp fields) of all the
@@ -133,13 +133,6 @@ public String generate(String initialText, int textLength)
         return initialText;
     }
 
-    String startWindow = initialText.substring(initialText.length() - windowLength);
-
-    if (!CharDataMap.containsKey(startWindow)) 
-    {
-        return initialText;
-    }
-
     StringBuilder sb = new StringBuilder(initialText);
 
     while (sb.length() < textLength) 
@@ -160,17 +153,16 @@ public String generate(String initialText, int textLength)
 }
 
 
+
     /** Returns a string representing the map of this language model. */
 	public String toString() {
-    StringBuilder str = new StringBuilder();
-    for (String key : CharDataMap.keySet()) {
-        List keyProbs = CharDataMap.get(key);
-        str.append(key + " : " + keyProbs + "\n");
-    }
-    return str.toString();
-}
-
-
+		StringBuilder str = new StringBuilder();
+		for (String key : CharDataMap.keySet()) {
+			List keyProbs = CharDataMap.get(key);
+			str.append(key + " : " + keyProbs + "\n");
+		}
+		return str.toString();
+	}
 
     public static void main(String[] args) 
     {
