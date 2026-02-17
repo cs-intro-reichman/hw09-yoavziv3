@@ -31,31 +31,32 @@ public class LanguageModel {
         CharDataMap = new HashMap<String, List>();
     }
 
-public void train(String fileName) 
-    {
-        In in = new In(fileName);
-        String text = in.readAll();
-        text = text.replaceAll("\\s+", " ");
-
-        for (int i = 0; i < text.length() - windowLength; i++) 
-        {
-            String window = text.substring(i, i + windowLength);
-            char nextChar = text.charAt(i + windowLength);
-            List probs = CharDataMap.get(window);
-            
-            if (probs == null) 
-            {
-                probs = new List();
-                CharDataMap.put(window, probs);
-            }
-            probs.update(nextChar);
-        }
-        
-        for (List probs : CharDataMap.values()) 
-        {
-            calculateProbabilities(probs);
-        }
+public void train(String fileName) {
+    In in = new In(fileName);
+    StringBuilder sb = new StringBuilder();
+    
+    // קריאה תו-אחר-תו כדי לוודא ששום דבר לא נעלם בדרך
+    while (!in.isEmpty()) {
+        sb.append(in.readChar());
     }
+    
+    String text = sb.toString().replace("\r", "");
+
+    for (int i = 0; i < text.length() - windowLength; i++) {
+        String window = text.substring(i, i + windowLength);
+        char nextChar = text.charAt(i + windowLength);
+        List probs = CharDataMap.get(window);
+        if (probs == null) {
+            probs = new List();
+            CharDataMap.put(window, probs);
+        }
+        probs.update(nextChar);
+    }
+
+    for (List probs : CharDataMap.values()) {
+        calculateProbabilities(probs);
+    }
+}
 
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
@@ -97,14 +98,12 @@ public void train(String fileName)
 	 * @param numberOfLetters - the size of text to generate
 	 * @return the generated text
 	 */
-	public String generate(String initialText, int textLength) 
+public String generate(String initialText, int textLength) 
     {
-        if (initialText.length() < windowLength) 
-        {
-            return initialText;
-        }
+        if (initialText.length() < windowLength) return initialText;
 
         StringBuilder sb = new StringBuilder(initialText);
+        
         while (sb.length() < textLength) 
         {
             String currentWindow = sb.substring(sb.length() - windowLength);
