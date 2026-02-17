@@ -35,7 +35,7 @@ public void train(String fileName)
     {
         In in = new In(fileName);
         String text = in.readAll();
-        text = text.replace("\r", "");
+        text = text.replaceAll("\\s+", " ");
 
         for (int i = 0; i < text.length() - windowLength; i++) 
         {
