@@ -138,6 +138,13 @@ public String generate(String initialText, int textLength)
         String currentWindow = sb.substring(sb.length() - windowLength);
         List probs = CharDataMap.get(currentWindow);
 
+        while (probs == null && sb.length() - windowLength - 1 >= 0) 
+        {
+            sb.deleteCharAt(sb.length() - 1);
+            currentWindow = sb.substring(sb.length() - windowLength);
+            probs = CharDataMap.get(currentWindow);
+        }
+
         if (probs == null) 
         {
             break;
@@ -149,6 +156,7 @@ public String generate(String initialText, int textLength)
 
     return sb.toString();
 }
+
 
 
 
