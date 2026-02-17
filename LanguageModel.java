@@ -33,6 +33,8 @@ public class LanguageModel {
 
 public void train(String fileName) 
 {
+    CharDataMap.clear();
+    
     In in = new In(fileName);
     StringBuilder sb = new StringBuilder();
 
@@ -48,18 +50,16 @@ public void train(String fileName)
     {
         return;
     }
-    
+
     if (n < windowLength) 
     {
         return;
     }
 
-    String circ = text + text.substring(0, windowLength);
-
-    for (int i = 0; i < n; i++) 
+    for (int i = 0; i < n - windowLength; i++) 
     {
-        String window = circ.substring(i, i + windowLength);
-        char nextChar = circ.charAt(i + windowLength);
+        String window = text.substring(i, i + windowLength);
+        char nextChar = text.charAt(i + windowLength);
 
         List probs = CharDataMap.get(window);
         if (probs == null) 
@@ -75,6 +75,7 @@ public void train(String fileName)
         calculateProbabilities(probs);
     }
 }
+
 
 
     // Computes and sets the probabilities (p and cp fields) of all the
@@ -118,28 +119,36 @@ public void train(String fileName)
 	 * @return the generated text
 	 */
 public String generate(String initialText, int textLength) 
+{
+    if (initialText.length() < windowLength) 
     {
-        if (initialText.length() < windowLength) return initialText;
+        return initialText;
+    }
 
-        StringBuilder sb = new StringBuilder(initialText);
-        
-        while (sb.length() < textLength) 
+    StringBuilder sb = new StringBuilder(initialText);
+
+    while (sb.length() < textLength) 
+    {
+        String currentWindow = sb.substring(sb.length() - windowLength);
+        List probs = CharDataMap.get(currentWindow);
+
+        if (probs == null) 
         {
-            String currentWindow = sb.substring(sb.length() - windowLength);
-            List probs = CharDataMap.get(currentWindow);
-
-            if (probs != null) 
-            {
-                char nextChar = getRandomChar(probs);
-                sb.append(nextChar);
-            } 
-            else 
+            currentWindow = initialText.substring(initialText.length() - windowLength);
+            probs = CharDataMap.get(currentWindow);
+            if (probs == null) 
             {
                 break;
             }
         }
-        return sb.toString();
+
+        char nextChar = getRandomChar(probs);
+        sb.append(nextChar);
     }
+
+    return sb.toString();
+}
+
 
     /** Returns a string representing the map of this language model. */
 	public String toString() {
