@@ -93,29 +93,31 @@ public class LanguageModel {
 	 * @param numberOfLetters - the size of text to generate
 	 * @return the generated text
 	 */
-	public String generate(String initialText, int textLength) {
-    if (initialText.length() >= textLength) 
+	public String generate(String initialText, int textLength) 
     {
-        return initialText;
-    }
-    StringBuilder sb = new StringBuilder(initialText);
-    while (sb.length() < textLength) 
-    {
-        String currentWindow = sb.substring(sb.length() - windowLength);
-                List probs = CharDataMap.get(currentWindow);
-        if (probs != null) 
+        if (initialText.length() >= textLength) 
         {
-            char nextChar = getRandomChar(probs);
-            sb.append(nextChar);
-        } 
-        else 
-        {
-            return sb.toString();
+            return initialText;
         }
+        StringBuilder sb = new StringBuilder(initialText);
+        int charactersToGenerate = textLength - initialText.length();
+        for (int i = 0; i < charactersToGenerate; i++) 
+        {
+            String currentWindow = sb.substring(sb.length() - windowLength);
+            List probs = CharDataMap.get(currentWindow);
+            if (probs != null) 
+            {
+                char nextChar = getRandomChar(probs);
+                sb.append(nextChar);
+            } 
+            else 
+            {
+                break; 
+            }
+        }
+        return sb.toString();
     }
     
-    return sb.toString();
-}
     /** Returns a string representing the map of this language model. */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
