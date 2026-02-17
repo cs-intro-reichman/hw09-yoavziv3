@@ -34,9 +34,7 @@ public class LanguageModel {
 public void train(String fileName) 
     {
         In in = new In(fileName);
-        // ה-replace מבטיח שהטקסט יהיה זהה גם בווינדוס וגם בלינוקס של הטסטר
-        String text = in.readAll().replace("\r", ""); 
-        
+        String text = in.readAll();
         for (int i = 0; i < text.length() - windowLength; i++) 
         {
             String window = text.substring(i, i + windowLength);
