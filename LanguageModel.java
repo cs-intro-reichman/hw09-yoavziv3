@@ -9,6 +9,9 @@ public class LanguageModel {
     
     // The window length used in this model.
     int windowLength;
+
+    private String firstWindow;
+
     
     // The random number generator used by this model. 
 	private Random randomGenerator;
@@ -34,7 +37,7 @@ public class LanguageModel {
 public void train(String fileName) 
 {
     CharDataMap.clear();
-    
+    firstWindow = null;
     In in = new In(fileName);
     StringBuilder sb = new StringBuilder();
 
@@ -60,6 +63,11 @@ public void train(String fileName)
     {
         String window = text.substring(i, i + windowLength);
         char nextChar = text.charAt(i + windowLength);
+
+        if (i == 0) 
+        {
+            firstWindow = window;
+        }
 
         List probs = CharDataMap.get(window);
         if (probs == null) 
@@ -134,8 +142,7 @@ public String generate(String initialText, int textLength)
 
         if (probs == null) 
         {
-            currentWindow = initialText.substring(initialText.length() - windowLength);
-            probs = CharDataMap.get(currentWindow);
+            probs = CharDataMap.get(firstWindow);
             if (probs == null) 
             {
                 break;
