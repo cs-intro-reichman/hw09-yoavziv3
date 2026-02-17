@@ -142,11 +142,7 @@ public String generate(String initialText, int textLength)
 
         if (probs == null) 
         {
-            probs = CharDataMap.get(firstWindow);
-            if (probs == null) 
-            {
-                break;
-            }
+            break;
         }
 
         char nextChar = getRandomChar(probs);
@@ -155,6 +151,7 @@ public String generate(String initialText, int textLength)
 
     return sb.toString();
 }
+
 
 
     /** Returns a string representing the map of this language model. */
