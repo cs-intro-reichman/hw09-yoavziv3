@@ -98,13 +98,15 @@ public String toString() {
     public void update(char chr) 
     {
         int index = indexOf(chr);
+        
         if (index != -1) 
         {
-            get(index).count++;
+            CharData curr = get(index);
+            curr.count++;
         } 
         else 
         {
-            addLast(chr);
+            addFirst(chr);
         }
     }
 
