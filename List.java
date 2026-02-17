@@ -39,13 +39,24 @@ public class List {
     }
     
     /** GIVE Textual representation of this list. */
-    public String toString() {
-            for (int i=0; i<size; i++)
+   public String toString() 
+   {
+        if (size == 0) 
+        {
+            return "";
+        }
+        StringBuilder str = new StringBuilder();
+        Node current = first;
+        while (current != null) 
+        {
+            str.append(current.cp.toString()); 
+            if (current.next != null) 
             {
-                CharData curr = get(i);
-                System.out.println(curr);
+                str.append(" ");
             }
-        return "";
+            current = current.next;
+        }
+        return str.toString();
     }
 
     /** Returns the index of the first CharData object in this list
