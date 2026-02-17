@@ -39,25 +39,21 @@ public class List {
     }
     
     /** GIVE Textual representation of this list. */
-   public String toString() 
-   {
-        if (size == 0) 
-        {
-            return "";
+public String toString() {
+    StringBuilder str = new StringBuilder();
+    str.append("(");
+    Node current = first;
+    while (current != null) {
+        str.append(current.cp.toString()); 
+        
+        if (current.next != null) {
+            str.append(" ");
         }
-        StringBuilder str = new StringBuilder();
-        Node current = first;
-        while (current != null) 
-        {
-            str.append(current.cp.toString()); 
-            if (current.next != null) 
-            {
-                str.append(" ");
-            }
-            current = current.next;
-        }
-        return str.toString();
+        current = current.next;
     }
+    str.append(")");
+    return str.toString();
+}
 
     /** Returns the index of the first CharData object in this list
      *  that has the same chr value as the given char,
