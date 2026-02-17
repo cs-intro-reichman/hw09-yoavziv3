@@ -54,10 +54,12 @@ public void train(String fileName)
         return;
     }
 
-    for (int i = 0; i < n - windowLength; i++) 
+    String circ = text + text.substring(0, windowLength);
+
+    for (int i = 0; i < n; i++) 
     {
-        String window = text.substring(i, i + windowLength);
-        char nextChar = text.charAt(i + windowLength);
+        String window = circ.substring(i, i + windowLength);
+        char nextChar = circ.charAt(i + windowLength);
 
         List probs = CharDataMap.get(window);
         if (probs == null) 
@@ -73,6 +75,7 @@ public void train(String fileName)
         calculateProbabilities(probs);
     }
 }
+
 
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
@@ -128,13 +131,6 @@ public String generate(String initialText, int textLength)
         String currentWindow = sb.substring(sb.length() - windowLength);
         List probs = CharDataMap.get(currentWindow);
 
-        while (probs == null && sb.length() - windowLength - 1 >= 0) 
-        {
-            sb.deleteCharAt(sb.length() - 1);
-            currentWindow = sb.substring(sb.length() - windowLength);
-            probs = CharDataMap.get(currentWindow);
-        }
-
         if (probs == null) 
         {
             break;
@@ -146,8 +142,6 @@ public String generate(String initialText, int textLength)
 
     return sb.toString();
 }
-
-
 
 
     /** Returns a string representing the map of this language model. */
