@@ -98,11 +98,9 @@ public String toString() {
     public void update(char chr) 
     {
         int index = indexOf(chr);
-        
         if (index != -1) 
         {
-            CharData curr = get(index);
-            curr.count++;
+            get(index).count++;
         } 
         else 
         {
