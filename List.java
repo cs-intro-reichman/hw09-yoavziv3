@@ -24,50 +24,138 @@ public class List {
 
     /** Returns the CharData of the first element in this list. */
     public CharData getFirst() {
-        // Your code goes here
+        if (first == null) 
+            {
+                return null;
+            }
         return first.cp;
     }
 
     /** GIVE Adds a CharData object with the given character to the beginning of this list. */
     public void addFirst(char chr) {
-        // Your code goes here
+        Node newFirst = new Node(new CharData(chr), first);
+        first = newFirst;
+        size++;
+    }
+
+    public void addLast(char chr) 
+    {
+        Node newNode = new Node(new CharData(chr), null);
+        
+        if (first == null) 
+        {
+            first = newNode;
+        } 
+        else 
+        {
+            Node current = first;
+            while (current.next != null) 
+            {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        size++;
     }
     
     /** GIVE Textual representation of this list. */
-    public String toString() {
-        // Your code goes here
-        return "";
+public String toString() {
+    StringBuilder str = new StringBuilder();
+    str.append("(");
+    Node current = first;
+    while (current != null) {
+        str.append(current.cp.toString()); 
+        
+        if (current.next != null) {
+            str.append(" ");
+        }
+        current = current.next;
     }
+    str.append(")");
+    return str.toString();
+}
 
     /** Returns the index of the first CharData object in this list
      *  that has the same chr value as the given char,
      *  or -1 if there is no such object in this list. */
-    public int indexOf(char chr) {
-        // Your code goes here
+    public int indexOf(char chr) 
+    {
+        Node current = first;
+        for (int i = 0; i < size; i++) 
+        {
+            if (current.cp.chr == chr) 
+            {
+                return i;
+            }
+            current = current.next;
+        }
         return -1;
     }
 
     /** If the given character exists in one of the CharData objects in this list,
      *  increments its counter. Otherwise, adds a new CharData object with the
      *  given chr to the beginning of this list. */
-    public void update(char chr) {
-        // Your code goes here
+    public void update(char chr) 
+{
+    int index = indexOf(chr);
+
+    if (index != -1) 
+    {
+        CharData curr = get(index);
+        curr.count++;
+    } 
+    else 
+    {
+        addFirst(chr);
     }
+}
+
+
 
     /** GIVE If the given character exists in one of the CharData objects
      *  in this list, removes this CharData object from the list and returns
      *  true. Otherwise, returns false. */
     public boolean remove(char chr) {
-        // Your code goes here
-        return false;
+        if (indexOf(chr) == -1)
+        {
+            return false;
+        }
+        else
+        {
+            if (indexOf(chr) == 0)
+            {
+                first = first.next;
+                size--;
+                return true;
+            }
+            Node current = first;
+            int i = 0;
+            while (i < indexOf(chr)-1)
+            {
+                current = current.next;
+                i++;
+            }
+            current.next = current.next.next;
+            size--;
+            return true;
+        }
     }
 
     /** Returns the CharData object at the specified index in this list. 
      *  If the index is negative or is greater than the size of this list, 
      *  throws an IndexOutOfBoundsException. */
-    public CharData get(int index) {
-        // Your code goes here
-        return null;
+    public CharData get(int index) 
+    {
+        if (index < 0 || index >= size) 
+        {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        Node current = first;
+        for (int i = 0; i < index; i++) 
+        {
+            current = current.next;
+        }
+        return current.cp;
     }
 
     /** Returns an array of CharData objects, containing all the CharData objects in this list. */
