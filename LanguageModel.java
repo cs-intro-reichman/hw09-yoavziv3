@@ -55,22 +55,22 @@ public class LanguageModel {
 
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
-	void calculateProbabilities(List probs) {               
-    int total = 0;
-    for (int i = 0; i < probs.getSize(); i++) 
-    {
-        total += probs.get(i).count;
-    }   
-    double cumulativeCount = 0.0;  
-    for (int i = 0; i < probs.getSize(); i++) 
-    {
-        CharData curr = probs.get(i);
-        curr.p = (double) curr.count / total;
-        
-        cumulativeCount += curr.count;
-        curr.cp = cumulativeCount / total;
+	void calculateProbabilities(List probs) 
+    {               
+        int totalCount = 0;
+        for (int i = 0; i < probs.getSize(); i++) 
+        {
+            totalCount += probs.get(i).count;
+        }   
+        double cumulativeCount = 0.0;  
+        for (int i = 0; i < probs.getSize(); i++) 
+        {
+            CharData curr = probs.get(i);
+            curr.p = (double) curr.count / totalCount;
+            cumulativeCount += curr.count;
+            curr.cp = cumulativeCount / totalCount; // חישוב מדויק
+        }
     }
-}
     // Returns a random character from the given probabilities list.
 	char getRandomChar(List probs) 
     {
@@ -95,7 +95,7 @@ public class LanguageModel {
 	 */
 	public String generate(String initialText, int textLength) 
     {
-        if (initialText.length() >= textLength) 
+        if (initialText.length() >= textLength || initialText.length() < windowLength) 
         {
             return initialText;
         }
@@ -103,7 +103,7 @@ public class LanguageModel {
         int charactersToGenerate = textLength - initialText.length();
         for (int i = 0; i < charactersToGenerate; i++) 
         {
-            String currentWindow = sb.substring(sb.length() - windowLength);
+            String currentWindow = sb.substring(sb.length() - windowLength); 
             List probs = CharDataMap.get(currentWindow);
             if (probs != null) 
             {
@@ -115,6 +115,7 @@ public class LanguageModel {
                 break; 
             }
         }
+
         return sb.toString();
     }
 
@@ -142,7 +143,8 @@ public class LanguageModel {
         } 
         else 
         {
-            lm = new LanguageModel(windowLength, 20); // Seed קבוע לבדיקות
+            int seed = (args.length > 5) ? Integer.parseInt(args[5]) : 20;
+            lm = new LanguageModel(windowLength, seed);
         }
         lm.train(fileName);
         String generatedText = lm.generate(initialText, textLength);
