@@ -48,7 +48,7 @@ public void train(String fileName)
         sb.append(in.readChar());
     }
 
-    String text = sb.toString().replace("\r", "");
+    String text = sb.toString();
     int n = text.length();
 
     if (n < windowLength) 
@@ -56,12 +56,10 @@ public void train(String fileName)
         return;
     }
 
-    String circ = text + text.substring(0, windowLength);
-
-    for (int i = 0; i < n; i++) 
+    for (int i = 0; i < n - windowLength; i++) 
     {
-        String window = circ.substring(i, i + windowLength);
-        char nextChar = circ.charAt(i + windowLength);
+        String window = text.substring(i, i + windowLength);
+        char nextChar = text.charAt(i + windowLength);
 
         List probs = CharDataMap.get(window);
         if (probs == null) 
@@ -77,6 +75,8 @@ public void train(String fileName)
         calculateProbabilities(probs);
     }
 }
+
+
 
 
     // Computes and sets the probabilities (p and cp fields) of all the
@@ -152,7 +152,6 @@ public String generate(String initialText, int textLength)
 
     return sb.toString();
 }
-
 
 
     /** Returns a string representing the map of this language model. */
