@@ -37,7 +37,7 @@ public class LanguageModel {
 public void train(String fileName) 
 {
     CharDataMap.clear();
-    firstWindow = null;
+
     In in = new In(fileName);
     StringBuilder sb = new StringBuilder();
 
@@ -59,15 +59,12 @@ public void train(String fileName)
         return;
     }
 
-    for (int i = 0; i < n - windowLength; i++) 
-    {
-        String window = text.substring(i, i + windowLength);
-        char nextChar = text.charAt(i + windowLength);
+    String circ = text + text.substring(0, windowLength);
 
-        if (i == 0) 
-        {
-            firstWindow = window;
-        }
+    for (int i = 0; i < n; i++) 
+    {
+        String window = circ.substring(i, i + windowLength);
+        char nextChar = circ.charAt(i + windowLength);
 
         List probs = CharDataMap.get(window);
         if (probs == null) 
@@ -83,6 +80,7 @@ public void train(String fileName)
         calculateProbabilities(probs);
     }
 }
+
 
 
 
