@@ -34,7 +34,7 @@ public class LanguageModel {
     public void train(String fileName) 
     {
         In in = new In(fileName);
-        String text = in.readAll();
+        String text = in.readAll().replaceAll("\\s+", " "); 
         for (int i = 0; i < text.length() - windowLength; i++) 
         {
             String window = text.substring(i, i + windowLength);
@@ -47,6 +47,7 @@ public class LanguageModel {
             }
             probs.update(nextChar);
         }
+        
         for (List probs : CharDataMap.values()) 
         {
             calculateProbabilities(probs);
