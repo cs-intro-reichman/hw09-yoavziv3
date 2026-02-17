@@ -34,7 +34,19 @@ public class LanguageModel {
     public void train(String fileName) 
     {
         In in = new In(fileName);
-        String text = in.readAll();
+        StringBuilder allText = new StringBuilder();
+        
+        while (!in.isEmpty()) 
+        {
+            allText.append(in.readString());
+            if (!in.isEmpty()) 
+            {
+                allText.append(" ");
+            }
+        }
+        
+        String text = allText.toString();
+        
         for (int i = 0; i < text.length() - windowLength; i++) 
         {
             String window = text.substring(i, i + windowLength);
@@ -96,7 +108,7 @@ public class LanguageModel {
 	 */
 	public String generate(String initialText, int textLength) 
     {
-        if (initialText.length() >= textLength || initialText.length() < windowLength) 
+        if (initialText.length() >= textLength) 
         {
             return initialText;
         }
@@ -104,7 +116,11 @@ public class LanguageModel {
         int charactersToGenerate = textLength - initialText.length();
         for (int i = 0; i < charactersToGenerate; i++) 
         {
-            String currentWindow = sb.substring(sb.length() - windowLength); 
+            if (sb.length() < windowLength) 
+            {
+                break; 
+            }
+            String currentWindow = sb.substring(sb.length() - windowLength);
             List probs = CharDataMap.get(currentWindow);
             if (probs != null) 
             {
@@ -113,10 +129,9 @@ public class LanguageModel {
             } 
             else 
             {
-                break; 
+                return sb.toString();
             }
         }
-
         return sb.toString();
     }
 
