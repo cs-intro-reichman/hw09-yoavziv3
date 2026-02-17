@@ -35,11 +35,14 @@ public void train(String fileName)
     {
         In in = new In(fileName);
         String text = in.readAll();
+        text = text.replace("\r", "");
+
         for (int i = 0; i < text.length() - windowLength; i++) 
         {
             String window = text.substring(i, i + windowLength);
             char nextChar = text.charAt(i + windowLength);
             List probs = CharDataMap.get(window);
+            
             if (probs == null) 
             {
                 probs = new List();
