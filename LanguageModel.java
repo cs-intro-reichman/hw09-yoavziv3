@@ -31,21 +31,11 @@ public class LanguageModel {
         CharDataMap = new HashMap<String, List>();
     }
 
-    public void train(String fileName) 
+public void train(String fileName) 
     {
         In in = new In(fileName);
-        StringBuilder allText = new StringBuilder();
-        
-        while (!in.isEmpty()) 
-        {
-            allText.append(in.readString());
-            if (!in.isEmpty()) 
-            {
-                allText.append(" ");
-            }
-        }
-        
-        String text = allText.toString();
+        // ה-replace מבטיח שהטקסט יהיה זהה גם בווינדוס וגם בלינוקס של הטסטר
+        String text = in.readAll().replace("\r", ""); 
         
         for (int i = 0; i < text.length() - windowLength; i++) 
         {
@@ -81,7 +71,7 @@ public class LanguageModel {
             CharData curr = probs.get(i);
             curr.p = (double) curr.count / totalCount;
             cumulativeCount += curr.count;
-            curr.cp = cumulativeCount / totalCount; // חישוב מדויק
+            curr.cp = cumulativeCount / totalCount;
         }
     }
     // Returns a random character from the given probabilities list.
@@ -108,20 +98,17 @@ public class LanguageModel {
 	 */
 	public String generate(String initialText, int textLength) 
     {
-        if (initialText.length() >= textLength) 
+        if (initialText.length() < windowLength) 
         {
             return initialText;
         }
+
         StringBuilder sb = new StringBuilder(initialText);
-        int charactersToGenerate = textLength - initialText.length();
-        for (int i = 0; i < charactersToGenerate; i++) 
+        while (sb.length() < textLength) 
         {
-            if (sb.length() < windowLength) 
-            {
-                break; 
-            }
             String currentWindow = sb.substring(sb.length() - windowLength);
             List probs = CharDataMap.get(currentWindow);
+
             if (probs != null) 
             {
                 char nextChar = getRandomChar(probs);
@@ -129,7 +116,7 @@ public class LanguageModel {
             } 
             else 
             {
-                return sb.toString();
+                break;
             }
         }
         return sb.toString();

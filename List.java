@@ -37,6 +37,26 @@ public class List {
         first = newFirst;
         size++;
     }
+
+    public void addLast(char chr) 
+    {
+        Node newNode = new Node(new CharData(chr), null);
+        
+        if (first == null) 
+        {
+            first = newNode;
+        } 
+        else 
+        {
+            Node current = first;
+            while (current.next != null) 
+            {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        size++;
+    }
     
     /** GIVE Textual representation of this list. */
 public String toString() {
@@ -78,6 +98,7 @@ public String toString() {
     public void update(char chr) 
     {
         int index = indexOf(chr);
+        
         if (index != -1) 
         {
             CharData curr = get(index);
@@ -85,7 +106,7 @@ public String toString() {
         } 
         else 
         {
-            addFirst(chr);
+            addLast(chr);
         }
     }
 
