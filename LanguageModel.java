@@ -35,7 +35,7 @@ public class LanguageModel {
     {
         In in = new In(fileName);
         String text = in.readAll();
-        for (int i = 0; i <= text.length() - windowLength - 1; i++)
+        for (int i = 0; i < text.length() - windowLength; i++) 
         {
             String window = text.substring(i, i + windowLength);
             char nextChar = text.charAt(i + windowLength);
@@ -78,7 +78,7 @@ public class LanguageModel {
         for (int i = 0; i < probs.getSize(); i++) 
         {
             CharData curr = probs.get(i);
-            if (curr.cp > r) 
+            if (curr.cp >= r) 
             {
                 return curr.chr;
             }
@@ -117,7 +117,7 @@ public class LanguageModel {
         }
         return sb.toString();
     }
-    
+
     /** Returns a string representing the map of this language model. */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
